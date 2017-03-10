@@ -3,4 +3,7 @@
 
     <!-- Startup activity -->
     <string name="prompt_loading">Loading...</string>
+
+    <!-- Search activity -->
+    <string name="prompt_search">Search</string>
 </resources>
