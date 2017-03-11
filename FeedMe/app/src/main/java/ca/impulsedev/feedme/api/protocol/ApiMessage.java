@@ -36,7 +36,7 @@ public class ApiMessage<TData> {
         ApiMessage<TData> message = gson.fromJson(data, getClass());
 
         mCode = message.mCode;
-        mDataSerialized = message.mDataSerialized;
+        mDataSerialized = gson.toJson(message.mDataSerialized);
         mData = gson.fromJson(mDataSerialized.toString(), mClassInfo);
     }
 
