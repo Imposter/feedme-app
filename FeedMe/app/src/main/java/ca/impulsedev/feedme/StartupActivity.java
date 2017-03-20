@@ -9,7 +9,7 @@ import ca.impulsedev.feedme.api.AsyncTask;
 import ca.impulsedev.feedme.api.AsyncTaskResult;
 import ca.impulsedev.feedme.api.service.Api;
 import ca.impulsedev.feedme.api.service.ServiceCallback;
-import ca.impulsedev.feedme.api.service.models.Business;
+import ca.impulsedev.feedme.api.service.models.Place;
 
 public class StartupActivity extends AppCompatActivity {
     private AsyncTask<Void> mStartupTask;
@@ -26,7 +26,6 @@ public class StartupActivity extends AppCompatActivity {
                 try {
                     // Dummy wait
                     Thread.sleep(2500);
-
 
                     Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
                     startActivity(intent);
@@ -49,8 +48,9 @@ public class StartupActivity extends AppCompatActivity {
             @Override
             protected void onEnd(int code, Api.SearchNearbyFoodPlacesResult result) {
                 Log.i("Api", "Got " + result.nearby.length + " results");
-                for (Business business : result.nearby) {
-                    Log.i("Api", String.format("%s: %f", business.name, business.rating));
+                for (Place place : result.nearby) {
+                    Log.i("Api", String.format("%s: %f located at %s", place.name, place.rating,
+                            place.vicinity));
                 }
             }
 
