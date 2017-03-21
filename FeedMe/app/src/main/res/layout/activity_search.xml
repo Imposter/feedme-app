@@ -50,6 +50,7 @@
                 android:hint="@string/prompt_search_hint"
                 android:imeActionLabel="@string/prompt_search_button"
                 android:inputType="text"
+                android:textColor="@color/colorPrimary"
                 android:maxLines="1" />
 
         </android.support.design.widget.TextInputLayout>
