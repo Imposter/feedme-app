@@ -48,9 +48,13 @@
                 android:orientation="vertical">
 
                 <!-- TODO: Change this into food image -->
+                <!-- TODO: This should be in an independent card within this linear layout which -->
+                <!-- TODO: also contains a label with the food name -->
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:id="@+id/food_image"
+                    android:src="@mipmap/main_icon_no_bg"/>
 
                 <android.support.v7.widget.RecyclerView
                     android:layout_width="match_parent"
