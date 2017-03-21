@@ -19,4 +19,5 @@
     <!-- Icons -->
     <string name="icon_star">&#xE885;</string>
     <string name="icon_dollar">&#xE227;</string>
+    <string name="settings">Settings</string>
 </resources>
