@@ -11,7 +11,8 @@ public class HttpResponse {
     private InputStream mStream;
     private boolean mOpen;
 
-    public HttpResponse(HttpRequest request, HttpURLConnection connection, int code, InputStream stream) {
+    public HttpResponse(HttpRequest request, HttpURLConnection connection, int code,
+                        InputStream stream) {
         mRequest = request;
         mConnection = connection;
         mStream = stream;

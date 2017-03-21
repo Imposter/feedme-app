@@ -45,7 +45,9 @@ public class HttpRequestTask extends AsyncTask<HttpResponse> {
 
     @Override
     public void cancel() {
-        mFutureResponse.cancel(true);
+        if (mFutureResponse != null) {
+            mFutureResponse.cancel(true);
+        }
         mRequest.close();
         super.cancel();
     }

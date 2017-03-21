@@ -1,11 +1,12 @@
 package ca.impulsedev.feedme.api.service;
 
-import ca.impulsedev.feedme.api.protocol.ApiDataTask;
 
-public class ServiceDataTask {
-    private ApiDataTask mTask;
+import ca.impulsedev.feedme.api.network.HttpTask;
 
-    public ServiceDataTask(ApiDataTask task) {
+public class ServiceTask {
+    private HttpTask mTask;
+
+    public ServiceTask(HttpTask task) {
         mTask = task;
     }
 

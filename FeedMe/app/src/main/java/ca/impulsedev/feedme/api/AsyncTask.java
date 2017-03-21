@@ -1,6 +1,7 @@
 package ca.impulsedev.feedme.api;
 
-public abstract class AsyncTask<TResult> extends android.os.AsyncTask<Void, Void, AsyncTaskResult<TResult>> {
+public abstract class AsyncTask<TResult> extends android.os.AsyncTask<Void, Void,
+        AsyncTaskResult<TResult>> {
     private boolean mRunning;
 
     @Override

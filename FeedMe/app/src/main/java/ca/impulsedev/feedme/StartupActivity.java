@@ -11,7 +11,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.ContextThemeWrapper;
-import android.util.Log;
 
 import ca.impulsedev.feedme.api.AsyncTask;
 import ca.impulsedev.feedme.api.AsyncTaskResult;
@@ -117,6 +116,8 @@ public class StartupActivity extends AppCompatActivity {
                             }
                         });
                     } else {
+                        // TODO: Check if API is available
+
                         // Wait
                         Thread.sleep(1000);
 

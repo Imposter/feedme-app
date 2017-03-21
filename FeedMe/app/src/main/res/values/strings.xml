@@ -12,5 +12,11 @@
     <string name="prompt_open_location_settings">Location services are disabled. Would you like to open location settings?</string>
 
     <!-- Search activity -->
-    <string name="prompt_search">Search</string>
+    <string name="prompt_search">Search...</string>
+    <string name="prompt_search_hint">Enter food, type, or restaurant</string>
+    <string name="prompt_search_button">@string/app_name</string>
+
+    <!-- Icons -->
+    <string name="icon_star">&#xE885;</string>
+    <string name="icon_dollar">&#xE227;</string>
 </resources>

@@ -1,4 +1,4 @@
-package ca.impulsedev.feedme.api.protocol;
+package ca.impulsedev.feedme.api.service;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
