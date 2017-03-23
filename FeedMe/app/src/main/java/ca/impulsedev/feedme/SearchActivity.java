@@ -73,13 +73,21 @@ public class SearchActivity extends AppCompatActivity {
                                         mPlaces.addAll(Arrays.asList(result.nearby));
                                         mAdapter.notifyDataSetChanged();
                                     }
+									
+									mSearchNearbyPlacesTask = null;
                                 }
 
                                 @Override
                                 protected void onError(Exception ex) {
                                     mSearchProgressBarView.setVisibility(View.GONE);
                                     ex.printStackTrace();
+									mSearchNearbyPlacesTask = null;
                                 }
+								
+								@Override
+								protected void onCancelled() {
+									mSearchNearbyPlacesTask = null;
+								}
                             }
                     );
                     return true;
@@ -91,6 +99,7 @@ public class SearchActivity extends AppCompatActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             // If we're searching, cancel the task
+			// TODO: Instead of setting as null all the time, check if task is cancelled, or complete, or running
             if (mSearchNearbyPlacesTask != null) {
                 mSearchProgressBarView.setVisibility(View.GONE);
                 mSearchNearbyPlacesTask.cancel();
