@@ -27,7 +27,8 @@
         </activity>
         <activity
             android:name=".SearchActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+        <activity android:name=".SubPageActivity"></activity>
     </application>
 
 </manifest>
