@@ -1,6 +1,7 @@
 package ca.impulsedev.feedme;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -63,6 +64,16 @@ public class RestaurantSearchAdapter extends
     public void onBindViewHolder(final ViewHolder viewHolder, int position) {
         Context context = viewHolder.mCardView.getContext();
         Place place = mPlaces.get(position);
+
+        // Clickable
+        viewHolder.mCardView.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Intent intent = new Intent(view.getContext(),SubPageActivity.class);
+                view.getContext().startActivity(intent);
+            }
+        });
+
 
         // Create font
         Typeface font = Typeface.createFromAsset(context.getAssets(),
