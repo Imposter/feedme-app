@@ -42,13 +42,6 @@ public class SearchActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
 
-
-
-
-        //getSupportActionBar().setTitle;
-
-
-
         mPlaces = new ArrayList<>();
         mAdapter = new RestaurantSearchAdapter(mPlaces);
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
