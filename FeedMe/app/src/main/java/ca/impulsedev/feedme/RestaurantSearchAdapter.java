@@ -3,7 +3,6 @@ package ca.impulsedev.feedme;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,8 +15,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import ca.impulsedev.feedme.api.service.models.Place;
-
-import static ca.impulsedev.feedme.R.layout.sub_page;
 
 public class RestaurantSearchAdapter extends
         RecyclerView.Adapter<RestaurantSearchAdapter.ViewHolder> {
@@ -60,18 +57,13 @@ public class RestaurantSearchAdapter extends
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(
                 R.layout.search_restaurant_result, viewGroup, false);
         ViewHolder viewHolder = new ViewHolder(view);
-
-
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder viewHolder, int position) {
-
-
         Context context = viewHolder.mCardView.getContext();
         Place place = mPlaces.get(position);
-
 
         // Clickable
         viewHolder.mCardView.setOnClickListener(new View.OnClickListener(){
@@ -81,6 +73,8 @@ public class RestaurantSearchAdapter extends
                 view.getContext().startActivity(intent);
             }
         });
+
+
 
         // Create font
         Typeface font = Typeface.createFromAsset(context.getAssets(),
