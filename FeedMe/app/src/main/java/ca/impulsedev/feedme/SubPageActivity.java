@@ -2,6 +2,7 @@ package ca.impulsedev.feedme;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,8 @@ import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -41,11 +44,22 @@ public class SubPageActivity extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
+        LinearLayout callButton = (LinearLayout) findViewById(R.id.call_layout);
 
+        callButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:6479973385"));
+                startActivity(intent);
 
+            }
+        });
 
-
-        //getSupportActionBar().setTitle;
+//        getSupportActionBar().setTitle;
+//        Intent intent = new Intent(Intent.ACTION_DIAL);
+//        intent.setData(Uri.parse("tel:0123456789"));
+//        startActivity(intent);
 
 
     }
