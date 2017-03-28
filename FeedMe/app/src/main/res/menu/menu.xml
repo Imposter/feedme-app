@@ -3,13 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    tools:context="ca.impulsedev.feedme.MenuActivity">
     <!-- Settings, should always be in the menu -->
     <item
         android:id="@+id/action_settings"
         android:checkable="false"
         android:title="@string/settings"
-        android:onClick="settings_OnAction"
+
         app:showAsAction="never" />
 
 </menu>

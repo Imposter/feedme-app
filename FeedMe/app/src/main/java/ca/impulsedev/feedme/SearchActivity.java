@@ -112,7 +112,7 @@ public class SearchActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                Intent i = new Intent(this,SubPageActivity.class);
+                Intent i = new Intent(this,SettingsActivity.class);
                 this.startActivity(i);
                 return true;
             default:
