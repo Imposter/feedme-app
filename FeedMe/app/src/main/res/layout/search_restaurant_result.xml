@@ -15,7 +15,14 @@
         cardView:cardUseCompatPadding="true"
         android:foreground="?selectableItemBackground"
         android:clickable="true"
+        android:onClick="toggle_contents"
         >
+        <TextView
+
+            android:id="@+id/txt_help_gest"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            />
 
         <LinearLayout
             android:layout_width="match_parent"
