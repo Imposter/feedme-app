@@ -8,16 +8,19 @@ public abstract class AsyncTask<TResult> extends android.os.AsyncTask<Void, Void
     protected AsyncTaskResult<TResult> doInBackground(Void... params) {
         return process();
     }
+
     @Override
     protected void onPreExecute() {
         mRunning = true;
         onBegin();
     }
+
     @Override
     protected void onPostExecute(AsyncTaskResult<TResult> result) {
         onEnd(result);
         mRunning = false;
     }
+
     @Override
     protected void onCancelled(AsyncTaskResult<TResult> result) {
         onCancelled();

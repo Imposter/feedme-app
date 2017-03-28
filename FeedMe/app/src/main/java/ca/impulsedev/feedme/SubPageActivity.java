@@ -27,6 +27,7 @@ import ca.impulsedev.feedme.api.service.ServiceCallback;
 import ca.impulsedev.feedme.api.service.ServiceTask;
 import ca.impulsedev.feedme.api.service.models.Place;
 
+// TODO: Update this
 public class SubPageActivity extends AppCompatActivity {
     private List<Place> mPlaces;
     private RestaurantSearchAdapter mAdapter;
@@ -66,16 +67,11 @@ public class SubPageActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
-
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
+        getMenuInflater().inflate(R.menu.appbar_menu, menu);
         return true;
     }
-
 }

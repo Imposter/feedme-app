@@ -18,9 +18,12 @@
     <string name="prompt_search">Search...</string>
     <string name="prompt_search_hint">Enter food, type, or restaurant</string>
     <string name="prompt_search_button">@string/app_name</string>
+    <string name="permission_location_required_fail">Location permission required. Unable to request location.</string>
+    <string name="permission_last_location_fail">Unable to request last location.</string>
+    <string name="error_location_fail">Unable to request location.</string>
+    <string name="error_unable_to_get_data">An error occurred while fetching data</string>
 
     <!-- Icons -->
     <string name="icon_star">&#xE885;</string>
     <string name="icon_dollar">&#xE227;</string>
-    <string name="settings">Settings</string>
 </resources>
