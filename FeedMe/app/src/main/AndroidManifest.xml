@@ -28,6 +28,7 @@
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".SubPageActivity"></activity>
     </application>
 
 </manifest>

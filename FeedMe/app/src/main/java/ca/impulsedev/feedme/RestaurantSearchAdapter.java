@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
@@ -57,6 +59,7 @@ public class RestaurantSearchAdapter extends
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(
                 R.layout.search_restaurant_result, viewGroup, false);
         ViewHolder viewHolder = new ViewHolder(view);
+
         return viewHolder;
     }
 
@@ -64,15 +67,6 @@ public class RestaurantSearchAdapter extends
     public void onBindViewHolder(final ViewHolder viewHolder, int position) {
         Context context = viewHolder.mCardView.getContext();
         Place place = mPlaces.get(position);
-
-        // Clickable
-        viewHolder.mCardView.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                //Intent intent = new Intent(view.getContext(),SubPageActivity.class);
-                //view.getContext().startActivity(intent);
-            }
-        });
 
 
 
