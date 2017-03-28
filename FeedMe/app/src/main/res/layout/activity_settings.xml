@@ -38,48 +38,39 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/AboutUsTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="About Us"
-                android:textAppearance="@android:style/TextAppearance.Material.Medium"
-                android:textStyle="bold" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/name1"
+                    android:id="@+id/AboutAppTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Betty Kwong" />
+                    android:text="About App"
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                    android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/name2"
+                    android:id="@+id/AboutAppText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Eyaz Rehman" />
+                    android:text="Feed Me!\nThis app is to help users look for food through what they are craving!" />
 
                 <TextView
-                    android:id="@+id/name3"
+                    android:id="@+id/AboutUsTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Rameet Sekhon" />
+                    android:text="About Us"
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                    android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/name4"
+                    android:id="@+id/AboutUsText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Rishabh Patel" />
+                    android:text="Developers:\nBetty Kwong\nEyaz Rehman\nRameet Sekhon\nRishabh Patel" />
+
             </LinearLayout>
         </RelativeLayout>
 
