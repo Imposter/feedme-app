@@ -49,17 +49,25 @@ public class SubPageActivity extends AppCompatActivity {
         callButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:6479973385"));
-                startActivity(intent);
-
+                Intent phone = new Intent(Intent.ACTION_DIAL);
+                //to be replaced with api-provided phone number
+                phone.setData(Uri.parse("tel:9059059059"));
+                startActivity(phone);
             }
         });
 
-//        getSupportActionBar().setTitle;
-//        Intent intent = new Intent(Intent.ACTION_DIAL);
-//        intent.setData(Uri.parse("tel:0123456789"));
-//        startActivity(intent);
+        LinearLayout directionButton = (LinearLayout) findViewById(R.id.direction_layout);
+        directionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String uri = "geo:43.8765786,-79.0942335,17z";
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
+                intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+                startActivity(intent);
+            }
+        });
+
+
 
 
     }
