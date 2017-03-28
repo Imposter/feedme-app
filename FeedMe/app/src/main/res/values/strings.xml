@@ -11,6 +11,9 @@
     <string name="prompt_open_network_settings">No network connection was found. Would you like to open network settings?</string>
     <string name="prompt_open_location_settings">Location services are disabled. Would you like to open location settings?</string>
 
+    <!-- App bar -->
+    <string name="appbar_menu_settings">Settings</string>
+
     <!-- Search activity -->
     <string name="prompt_search">Search...</string>
     <string name="prompt_search_hint">Enter food, type, or restaurant</string>

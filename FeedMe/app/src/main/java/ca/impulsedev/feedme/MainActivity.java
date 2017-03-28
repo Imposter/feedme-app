@@ -1,7 +1,6 @@
 package ca.impulsedev.feedme;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,7 +23,7 @@ import ca.impulsedev.feedme.api.service.ServiceCallback;
 import ca.impulsedev.feedme.api.service.ServiceTask;
 import ca.impulsedev.feedme.api.service.models.Place;
 
-public class SearchActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
     private List<Place> mPlaces;
     private RestaurantSearchAdapter mAdapter;
     private RecyclerView mRecyclerView;
@@ -36,15 +35,10 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+        setContentView(R.layout.activity_main);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
-
-
-        //getSupportActionBar().setTitle;
-
-
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         mPlaces = new ArrayList<>();
         mAdapter = new RestaurantSearchAdapter(mPlaces);
@@ -104,6 +98,7 @@ public class SearchActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {

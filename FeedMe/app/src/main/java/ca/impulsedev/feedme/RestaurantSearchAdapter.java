@@ -69,8 +69,8 @@ public class RestaurantSearchAdapter extends
         viewHolder.mCardView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                Intent intent = new Intent(view.getContext(),SubPageActivity.class);
-                view.getContext().startActivity(intent);
+                //Intent intent = new Intent(view.getContext(),SubPageActivity.class);
+                //view.getContext().startActivity(intent);
             }
         });
 
