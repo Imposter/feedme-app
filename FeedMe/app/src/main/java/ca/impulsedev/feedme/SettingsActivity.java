@@ -1,6 +1,7 @@
 package ca.impulsedev.feedme;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -11,27 +12,72 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.TextView;
+
+import ca.impulsedev.feedme.api.service.models.Place;
 
 public class SettingsActivity extends AppCompatActivity {
     private Switch mSwitch;
     private LocationManager mLocationManager;
     private LocationListener mLocationListener;
+    private CardView mAboutApp;
+    private CardView mAboutUs;
+    private TextView mAboutAppText;
+    private TextView mAboutUsText;
+    private boolean bAboutApp = false;
+    private boolean bAboutUs = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
         mSwitch = (Switch) findViewById(R.id.location_switch);
+        mAboutApp = (CardView) findViewById(R.id.AboutApp);
+        mAboutUs = (CardView) findViewById(R.id.AboutUs);
+        mAboutAppText = (TextView) findViewById(R.id.AboutAppText);
+        mAboutUsText = (TextView) findViewById(R.id.AboutUsText);
+
         mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     configureSwitch();
                 }
             }
+        });
+
+        mAboutApp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!bAboutApp) {
+                    mAboutAppText.setVisibility(TextView.VISIBLE);
+                    bAboutApp = true;
+                }
+                else {
+                    mAboutAppText.setVisibility(TextView.GONE);
+                    bAboutApp = false;
+                }
+            };
+        });
+
+        mAboutUs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!bAboutUs) {
+                    mAboutUsText.setVisibility(TextView.VISIBLE);
+                    bAboutUs = true;
+                }
+                else {
+                    mAboutUsText.setVisibility(TextView.GONE);
+                    bAboutUs = false;
+                }
+            };
         });
     }
 
