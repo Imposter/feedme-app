@@ -61,7 +61,7 @@ public class HttpRequest {
             return mResponse;
         }
 
-        mConnection = (HttpURLConnection)mUrl.openConnection();
+        mConnection = (HttpURLConnection) mUrl.openConnection();
         mConnection.setConnectTimeout(mTimeout);
         mConnection.setReadTimeout(mTimeout);
 

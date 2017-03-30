@@ -20,8 +20,8 @@ public class ServiceCall {
 
     public static <TArgs, TResult>
     ServiceTask dataCall(String url, int timeout, String component, String command, TArgs args,
-                             Class<TArgs> argsClass, final Class<TResult> resultClass,
-                             final ServiceCallback<TResult> callback) {
+                         Class<TArgs> argsClass, final Class<TResult> resultClass,
+                         final ServiceCallback<TResult> callback) {
         String requestUrl = String.format("%s/%s/%s", url, component, command);
         String data = null;
         if (args != null && argsClass != null) {
@@ -49,7 +49,7 @@ public class ServiceCall {
                         }
 
                         ApiMessage<TResult> message = new ApiMessage<>(resultClass);
-                                message.deserialize(builder.toString());
+                        message.deserialize(builder.toString());
 
                         callback.onEnd(message.getCode(), message.getData());
                     } catch (Exception ex) {

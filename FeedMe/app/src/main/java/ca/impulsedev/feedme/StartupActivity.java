@@ -121,7 +121,7 @@ public class StartupActivity extends AppCompatActivity {
                         // Wait
                         Thread.sleep(1000);
 
-                        Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(intent);
                         finish();
                     }

@@ -25,7 +25,6 @@ public class Api {
         public String food;
         public double longitude;
         public double latitude;
-        public double radius;
         public String token;
     }
 
@@ -35,7 +34,7 @@ public class Api {
     }
 
     public static ServiceTask getFoodImage(String food,
-                                               ServiceCallback<SearchFoodImageResult> callback) {
+                                           ServiceCallback<SearchFoodImageResult> callback) {
         SearchFoodImageArgs args = new SearchFoodImageArgs();
         args.food = food;
 
@@ -44,15 +43,13 @@ public class Api {
     }
 
     public static ServiceTask getNearbyFoodPlaces(String food, double latitude,
-                                                      double longitude, double radius,
-                                                      String previousToken,
-                                                      ServiceCallback<SearchNearbyFoodPlacesResult>
-                                                              callback) {
+                                                  double longitude, String previousToken,
+                                                  ServiceCallback<SearchNearbyFoodPlacesResult>
+                                                          callback) {
         SearchNearbyFoodPlacesArgs args = new SearchNearbyFoodPlacesArgs();
         args.food = food;
         args.longitude = longitude;
         args.latitude = latitude;
-        args.radius = radius;
         args.token = previousToken;
 
         return ServiceCall.dataCall(API_ADDRESS, API_TIMEOUT, "search", "nearbyFoodPlaces", args,
@@ -60,10 +57,10 @@ public class Api {
     }
 
     public static ServiceTask getNearbyFoodPlaces(String food, double latitude,
-                                                      double longitude, double radius,
-                                                      ServiceCallback<SearchNearbyFoodPlacesResult>
-                                                              callback) {
-        return getNearbyFoodPlaces(food, latitude, longitude, radius, null, callback);
+                                                  double longitude,
+                                                  ServiceCallback<SearchNearbyFoodPlacesResult>
+                                                          callback) {
+        return getNearbyFoodPlaces(food, latitude, longitude, null, callback);
     }
 
     public static ServiceTask downloadFile(String url, ServiceCallback<HttpStream> callback) {

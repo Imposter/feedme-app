@@ -17,4 +17,8 @@ public class ServiceTask {
     public boolean isCancelled() {
         return mTask.isCancelled();
     }
+
+    public boolean isRunning() {
+        return mTask.isRunning();
+    }
 }
