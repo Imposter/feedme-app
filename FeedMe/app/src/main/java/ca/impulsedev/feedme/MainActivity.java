@@ -470,6 +470,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                Intent i = new Intent(this,SettingsActivity.class);
+                this.startActivity(i);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void onLocationChanged(Location location) {
         if (isBetterLocation(location, mCurrentLocation))
             mCurrentLocation = location;
