@@ -5,8 +5,10 @@ public enum ApiResponseCode {
     ERROR,
 
     // Search
-    SEARCH,
     SEARCH_INVALID_PARAMETERS,
     SEARCH_FOOD_IMAGE_NOT_FOUND,
-    SEARCH_FOOD_IMAGE_ERROR;
+    SEARCH_FOOD_IMAGE_ERROR,
+
+    // Place
+    PLACE_INVALID_PARAMETERS,
 }

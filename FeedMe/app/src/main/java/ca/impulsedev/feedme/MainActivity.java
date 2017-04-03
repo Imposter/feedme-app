@@ -2,10 +2,12 @@ package ca.impulsedev.feedme;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -13,15 +15,22 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,29 +39,44 @@ import ca.impulsedev.feedme.api.service.Api;
 import ca.impulsedev.feedme.api.service.ServiceCallback;
 import ca.impulsedev.feedme.api.service.ServiceTask;
 import ca.impulsedev.feedme.api.service.models.Place;
+import ca.impulsedev.feedme.ui.ViewUtils;
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
+    private static final String SEARCH_HISTORY_FILE = "searches.txt";
+
     private static final int PERMISSION_REQUEST_LOCATION = 100;
 
     private static final int LOCATION_REQUEST_DELAY = 2500;
     private static final int LOCATION_REQUEST_DISTANCE = 25;
     private static final int LOCATION_TIMEOUT = 1000 * 60 * 2;
 
-    private static final int LOCATION_SEARCH_RADIUS = 50000; // Meters
-
     private List<Place> mPlaces;
-    private RestaurantSearchAdapter mAdapter;
+    private SearchAdapter mAdapter;
     private Toolbar mToolbar;
+    private ProgressBar mProgressBar;
+
+    private LocationManager mLocationManager;
+    private Location mCurrentLocation;
+
+    private View mSearchView;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
-    private ProgressBar mSearchProgressBarView;
-    private EditText mSearchEditTextView;
+    private AutoCompleteTextView mSearchText;
+    private List<String> mPreviousSearches;
+    private ArrayAdapter<String> mSearchAdapter;
     private ServiceTask mSearchNearbyPlacesTask;
     private String mLastToken;
 
-    private LocationManager mLocationManager;
-    private List<String> mCurrentProviders;
-    private Location mCurrentLocation;
+    private View mRestaurantView;
+    private ScrollView mRestaurantScroll;
+    private TextView mRestaurantName;
+    private RatingBar mRestaurantRating;
+    private View mRestaurantCallView;
+    private TextView mRestaurantPhoneNumber;
+    private View mRestaurantDirectionsView;
+    private TextView mRestaurantLocation;
+    private TextView mRestaurantHours;
+    private ServiceTask mGetPlaceInfoTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +84,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         setContentView(R.layout.activity_main);
 
         mPlaces = new ArrayList<>();
-        mAdapter = new RestaurantSearchAdapter(mPlaces);
+        mAdapter = new SearchAdapter(this);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
+
+        mProgressBar = (ProgressBar) findViewById(R.id.progress);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mLinearLayoutManager = new LinearLayoutManager(this);
@@ -89,10 +115,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             }
         });
 
-        mSearchProgressBarView = (ProgressBar) findViewById(R.id.search_progress);
-
-        mSearchEditTextView = (EditText) findViewById(R.id.search_text);
-        mSearchEditTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mSearchView = findViewById(R.id.search_view);
+        mSearchText = (AutoCompleteTextView) findViewById(R.id.search_text);
+        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
                 InputMethodManager inputMethodManager
@@ -108,6 +133,28 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 return true;
             }
         });
+
+        // Add previous searches to array list
+        mPreviousSearches = new ArrayList<>();
+        mSearchAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line,
+                mPreviousSearches);
+        mSearchText.setAdapter(mSearchAdapter);
+
+        // Read search history file and add it to the previous search list
+        loadSearches();
+
+        // Notify adapter that the data set has changed and we need to update the UI
+        mSearchAdapter.notifyDataSetChanged();
+
+        mRestaurantView = findViewById(R.id.restaurant_view);
+        mRestaurantScroll = (ScrollView) findViewById(R.id.restaurant_info_scroll);
+        mRestaurantName = (TextView) findViewById(R.id.restaurant_info_name);
+        mRestaurantRating = (RatingBar) findViewById(R.id.restaurant_info_rating);
+        mRestaurantCallView = findViewById(R.id.restaurant_info_call);
+        mRestaurantPhoneNumber = (TextView) findViewById(R.id.restaurant_info_phone_number);
+        mRestaurantDirectionsView = findViewById(R.id.restaurant_info_directions);
+        mRestaurantLocation = (TextView) findViewById(R.id.restaurant_info_location);
+        mRestaurantHours = (TextView) findViewById(R.id.restaurant_info_hours);
 
         // Request permissions for location
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -130,19 +177,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         Location location = mCurrentLocation;
         if (mCurrentLocation == null) {
             try {
-                Location lastGpsLocation = mLocationManager.getLastKnownLocation(
+                location = mLocationManager.getLastKnownLocation(
                         LocationManager.GPS_PROVIDER);
-                Location lastNetworkLocation = mLocationManager.getLastKnownLocation(
-                        LocationManager.NETWORK_PROVIDER);
-                if (lastNetworkLocation == null) {
-                    location = lastGpsLocation;
-                } else if (lastGpsLocation == null) {
-                    location = lastNetworkLocation;
-                } else {
-                    location = lastGpsLocation.getTime()
-                            > lastNetworkLocation.getTime()
-                            ? lastGpsLocation : lastNetworkLocation;
-                }
             } catch (SecurityException ex) {
                 ex.printStackTrace();
 
@@ -160,26 +196,32 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             return;
         }
 
-        // Set current location in adapter
-        mAdapter.setLocation(location);
+        // Set current location
+        mCurrentLocation = location;
 
-        mSearchNearbyPlacesTask = Api.getNearbyFoodPlaces(mSearchEditTextView.getText().toString(),
-                location.getLatitude(), location.getLongitude(), mLastToken,
+        final String searchText = mSearchText.getText().toString();
+        mSearchNearbyPlacesTask = Api.getNearbyFoodPlaces(searchText, location.getLatitude(),
+                location.getLongitude(), mLastToken,
                 new ServiceCallback<Api.SearchNearbyFoodPlacesResult>() {
                     @Override
                     protected void onBegin() {
-                        mSearchProgressBarView.setVisibility(View.VISIBLE);
+                        mProgressBar.setVisibility(View.VISIBLE);
                     }
 
                     @Override
                     protected void onEnd(int code,
                                          Api.SearchNearbyFoodPlacesResult result) {
-                        mSearchProgressBarView.setVisibility(View.GONE);
+                        mProgressBar.setVisibility(View.GONE);
                         if (result != null) {
                             mPlaces.addAll(Arrays.asList(result.nearby));
                             mAdapter.notifyDataSetChanged();
 
                             mLastToken = result.next;
+
+                            // Add string to search history
+                            if (!mPreviousSearches.contains(searchText))
+                                mPreviousSearches.add(searchText);
+                            updateSearches();
                         }
 
                         mSearchNearbyPlacesTask = null;
@@ -189,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     protected void onError(Exception ex) {
                         ex.printStackTrace();
 
-                        mSearchProgressBarView.setVisibility(View.GONE);
+                        mProgressBar.setVisibility(View.GONE);
                         mSearchNearbyPlacesTask = null;
 
                         Toast.makeText(MainActivity.this, R.string.error_unable_to_get_data,
@@ -199,10 +241,94 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     @Override
                     protected void onCancelled() {
                         mSearchNearbyPlacesTask = null;
+                        mLastToken = null;
                     }
                 }
         );
-        mLastToken = null;
+    }
+
+    public void showDetailsForPlace(Place place) {
+        // Get details for place
+        mGetPlaceInfoTask = Api.getPlaceInfo(place.place_id,
+                new ServiceCallback<Api.GetPlaceInfoResult>() {
+                    @Override
+                    protected void onBegin() {
+                        mProgressBar.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    protected void onEnd(int code,
+                                         final Api.GetPlaceInfoResult result) {
+                        mProgressBar.setVisibility(View.GONE);
+                        if (result != null) {
+                            // Set restaurant text
+                            mRestaurantName.setText(result.result.name);
+                            mRestaurantRating.setRating(result.result.rating.floatValue());
+                            mRestaurantLocation.setText(result.result.formatted_address);
+                            mRestaurantPhoneNumber.setText(result.result.formatted_phone_number);
+                            mRestaurantHours.setText(TextUtils.join("\n",
+                                    result.result.opening_hours.weekday_text
+                            ));
+
+                            // Update buttons
+                            mRestaurantCallView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent dialIntent = new Intent(Intent.ACTION_DIAL);
+                                    dialIntent.setData(Uri.parse(String.format("tel:%s",
+                                            result.result.formatted_phone_number)));
+                                    startActivity(dialIntent);
+                                }
+                            });
+                            mRestaurantDirectionsView.setOnClickListener(
+                                    new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            Intent mapsIntent = new Intent(Intent.ACTION_VIEW);
+                                            mapsIntent.setData(Uri.parse(String.format(
+                                                    "geo:0,0?q=%s", result.result.formatted_address
+                                            )));
+                                            mapsIntent.setPackage("com.google.android.apps.maps");
+                                            startActivity(mapsIntent);
+                                        }
+                                    });
+
+                            // Scroll to top
+                            mRestaurantScroll.scrollTo(0, 0);
+
+                            // Hide search view, show restaurant view
+                            ViewUtils.animateShow(mSearchView, false);
+                            ViewUtils.animateShow(mRestaurantView, true);
+                        }
+
+                        mGetPlaceInfoTask = null;
+                    }
+
+                    @Override
+                    protected void onError(Exception ex) {
+                        ex.printStackTrace();
+
+                        mProgressBar.setVisibility(View.GONE);
+                        mGetPlaceInfoTask = null;
+
+                        Toast.makeText(MainActivity.this, R.string.error_unable_to_get_data,
+                                Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    protected void onCancelled() {
+                        mGetPlaceInfoTask = null;
+                    }
+                }
+        );
+    }
+
+    public List<Place> getPlaces() {
+        return mPlaces;
+    }
+
+    public Location getCurrentLocation() {
+        return mCurrentLocation;
     }
 
     @Override
@@ -210,18 +336,45 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             // If we're searching, cancel the task
             if (mSearchNearbyPlacesTask != null) {
-                mSearchProgressBarView.setVisibility(View.GONE);
+                mProgressBar.setVisibility(View.GONE);
                 mSearchNearbyPlacesTask.cancel();
+                return true;
+            }
+
+            // If we're getting details about a place, cancel the task
+            if (mGetPlaceInfoTask != null) {
+                mProgressBar.setVisibility(View.GONE);
+                mGetPlaceInfoTask.cancel();
+                return true;
+            }
+
+            // If we're in the details view, return to the main view
+            if (mRestaurantView.getVisibility() == View.VISIBLE) {
+                ViewUtils.animateShow(mRestaurantView, false);
+                ViewUtils.animateShow(mSearchView, true);
                 return true;
             }
         }
         return super.onKeyDown(keyCode, event);
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
+    private void requestLocationUpdates() {
+        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
+        // Get location updates using the GPS
+        try {
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                    LOCATION_REQUEST_DELAY, LOCATION_REQUEST_DISTANCE, this);
+        } catch (SecurityException ex) {
+            ex.printStackTrace();
+
+            // Notify user that this application requires location permission
+            Toast.makeText(this, R.string.permission_location_required_fail,
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void removeLocationUpdates() {
         try {
             mLocationManager.removeUpdates(this);
         } catch (SecurityException ex) {
@@ -233,25 +386,52 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
     }
 
-    private void requestLocationUpdates() {
-        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        mCurrentProviders = new ArrayList<>();
-
-        // Get location updates from best available provider
-        List<String> providers = mLocationManager.getProviders(true);
-        for (String provider : providers) {
-            try {
-                mLocationManager.requestLocationUpdates(provider, LOCATION_REQUEST_DELAY,
-                        LOCATION_REQUEST_DISTANCE, this);
-                mCurrentProviders.add(provider);
-            } catch (SecurityException ex) {
-                ex.printStackTrace();
-
-                // Notify user that this application requires location permission
-                Toast.makeText(this, R.string.permission_location_required_fail,
-                        Toast.LENGTH_LONG).show();
+    private void loadSearches() {
+        try {
+            FileInputStream input = openFileInput(SEARCH_HISTORY_FILE);
+            StringBuilder builder = new StringBuilder();
+            while (input.available() > 0) {
+                int b = input.read();
+                if (b == '\n') {
+                    String search = builder.toString();
+                    if (!mPreviousSearches.contains(search))
+                        mPreviousSearches.add(search);
+                    builder.delete(0, builder.length());
+                } else {
+                    builder.append((char) b);
+                }
             }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
+
+        updateSearches();
+    }
+
+    private void updateSearches() {
+        mSearchAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line,
+                mPreviousSearches);
+        mSearchText.setAdapter(mSearchAdapter);
+    }
+
+    private void saveSearches() {
+        try {
+            FileOutputStream output = openFileOutput(SEARCH_HISTORY_FILE, Context.MODE_PRIVATE);
+            for (String search : mPreviousSearches) {
+                output.write(String.format("%s\n", search).getBytes());
+            }
+            output.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // Save searches
+        saveSearches();
     }
 
     @Override
@@ -260,6 +440,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         // Request location updates
         requestLocationUpdates();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        removeLocationUpdates();
     }
 
     @Override
@@ -283,9 +470,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     @Override
     public void onLocationChanged(Location location) {
-        if (isBetterLocation(location, mCurrentLocation)) {
+        if (isBetterLocation(location, mCurrentLocation))
             mCurrentLocation = location;
-        }
     }
 
     @Override
@@ -295,24 +481,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     @Override
     public void onProviderEnabled(String provider) {
-        try {
-            if (!mCurrentProviders.contains(provider)) {
-                mLocationManager.requestLocationUpdates(provider, LOCATION_REQUEST_DELAY,
-                        LOCATION_REQUEST_DISTANCE, this);
-                mCurrentProviders.add(provider);
-            }
-        } catch (SecurityException ex) {
-            ex.printStackTrace();
-        }
+        // Not needed, but required
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-        if (mCurrentProviders.contains(provider)) {
-            mCurrentProviders.remove(provider);
-        }
+        // Not needed, but required
     }
 
+    // https://developer.android.com/guide/topics/location/strategies.html
     protected static boolean isBetterLocation(Location location, Location currentBestLocation) {
         if (currentBestLocation == null) {
             // A new location is always better than no location
@@ -325,12 +502,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         boolean isSignificantlyOlder = timeDelta < -LOCATION_TIMEOUT;
         boolean isNewer = timeDelta > 0;
 
-        // If it's been more than two minutes since the current location, use the new location
-        // because the user has likely moved
         if (isSignificantlyNewer) {
+            // If it's been more than two minutes since the current location, use the new location
+            // because the user has likely moved
             return true;
-            // If the new location is more than two minutes older, it must be worse
         } else if (isSignificantlyOlder) {
+            // If the new location is more than two minutes older, it must be worse
             return false;
         }
 
@@ -352,6 +529,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         } else if (isNewer && !isSignificantlyLessAccurate && isFromSameProvider) {
             return true;
         }
+
         return false;
     }
 
@@ -359,6 +537,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         if (provider1 == null) {
             return provider2 == null;
         }
+
         return provider1.equals(provider2);
     }
 }

@@ -11,9 +11,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.ContextThemeWrapper;
+import android.widget.Toast;
 
 import ca.impulsedev.feedme.api.AsyncTask;
 import ca.impulsedev.feedme.api.AsyncTaskResult;
+import ca.impulsedev.feedme.api.service.Api;
+import ca.impulsedev.feedme.api.service.ServiceCallback;
 
 public class StartupActivity extends AppCompatActivity {
     private AsyncTask<Void> mStartupTask;
@@ -53,80 +56,93 @@ public class StartupActivity extends AppCompatActivity {
         mStartupTask = new AsyncTask<Void>() {
             @Override
             protected AsyncTaskResult<Void> process() {
-                try {
-                    // Check if network is available
-                    if (!isWifiAvailable() && !isMobileDataAvailable()) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                // Prompt to open settings
-                                AlertDialog.Builder builder =
-                                        new AlertDialog.Builder(
-                                                new ContextThemeWrapper(StartupActivity.this,
-                                                        R.style.AppTheme));
-                                builder.setMessage(R.string.prompt_open_network_settings);
-                                builder.setPositiveButton(R.string.dialog_yes,
-                                        new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                Intent intent = new Intent(
-                                                        Settings.ACTION_WIFI_SETTINGS);
-                                                startActivity(intent);
-                                                dialog.dismiss();
-                                            }
-                                        });
-                                builder.setNegativeButton(R.string.dialog_no,
-                                        new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                finish();
-                                            }
-                                        });
-                                builder.show();
-                            }
-                        });
-                    } else if (!isGpsEnabled() && !isMobileLocationEnabled()) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                // Prompt to open settings
-                                AlertDialog.Builder alert =
-                                        new AlertDialog.Builder(
-                                                new ContextThemeWrapper(StartupActivity.this,
-                                                        R.style.AppTheme));
-                                alert.setMessage(R.string.prompt_open_location_settings);
-                                alert.setPositiveButton(R.string.dialog_yes,
-                                        new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                Intent intent = new Intent(
-                                                        Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                                startActivity(intent);
-                                                dialog.dismiss();
-                                            }
-                                        });
-                                alert.setNegativeButton(R.string.dialog_no,
-                                        new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                finish();
-                                            }
-                                        });
-                                alert.show();
-                            }
-                        });
-                    } else {
-                        // TODO: Check if API is available
+                // Check if network is available
+                if (!isWifiAvailable() && !isMobileDataAvailable()) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Prompt to open settings
+                            AlertDialog.Builder alert =
+                                    new AlertDialog.Builder(
+                                            new ContextThemeWrapper(StartupActivity.this,
+                                                    R.style.AppTheme));
+                            alert.setMessage(R.string.prompt_open_network_settings);
+                            alert.setCancelable(false);
+                            alert.setPositiveButton(R.string.dialog_yes,
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent intent = new Intent(
+                                                    Settings.ACTION_WIFI_SETTINGS);
+                                            startActivity(intent);
+                                            dialog.dismiss();
+                                        }
+                                    }
+                            );
+                            alert.setNegativeButton(R.string.dialog_no,
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            finish();
+                                        }
+                                    }
+                            );
+                            alert.show();
+                        }
+                    });
+                } else if (!isGpsEnabled()) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Prompt to open settings
+                            AlertDialog.Builder alert =
+                                    new AlertDialog.Builder(
+                                            new ContextThemeWrapper(StartupActivity.this,
+                                                    R.style.AppTheme));
+                            alert.setMessage(R.string.prompt_open_location_settings);
+                            alert.setCancelable(false);
+                            alert.setPositiveButton(R.string.dialog_yes,
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent intent = new Intent(
+                                                    Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                            startActivity(intent);
+                                            dialog.dismiss();
+                                        }
+                                    }
+                            );
+                            alert.setNegativeButton(R.string.dialog_no,
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            finish();
+                                        }
+                                    }
+                            );
+                            alert.show();
+                        }
+                    });
+                } else {
+                    // Check if API is available
+                    Api.getVersion(new ServiceCallback<Api.GetVersionInfoResult>() {
+                        @Override
+                        protected void onEnd(int code, Api.GetVersionInfoResult result) {
+                            Toast.makeText(StartupActivity.this, String.format("Server version: %s",
+                                    result.version), Toast.LENGTH_SHORT).show();
 
-                        // Wait
-                        Thread.sleep(1000);
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
 
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
+                        @Override
+                        protected void onError(Exception ex) {
+                            Toast.makeText(StartupActivity.this, R.string.error_api_unavailable,
+                                    Toast.LENGTH_LONG).show();
+                            finish();
+                        }
+                    });
                 }
                 return null;
             }
@@ -154,17 +170,6 @@ public class StartupActivity extends AppCompatActivity {
                 (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         try {
             locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            return true;
-        } catch (Exception ex) {
-            return false;
-        }
-    }
-
-    private boolean isMobileLocationEnabled() {
-        LocationManager locationManager =
-                (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        try {
-            locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
             return true;
         } catch (Exception ex) {
             return false;

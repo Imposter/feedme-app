@@ -42,7 +42,8 @@ public class HttpTask extends AsyncTask<HttpStream> {
 
     public HttpTask(String url, String data, int timeout) {
         mUrl = url;
-        mData = data.getBytes();
+        if (data != null)
+            mData = data.getBytes();
         mTimeout = timeout;
     }
 

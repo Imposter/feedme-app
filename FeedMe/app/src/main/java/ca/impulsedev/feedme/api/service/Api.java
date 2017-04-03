@@ -1,9 +1,8 @@
 package ca.impulsedev.feedme.api.service;
 
-import java.io.InputStream;
-
 import ca.impulsedev.feedme.api.network.HttpStream;
 import ca.impulsedev.feedme.api.service.models.Place;
+import ca.impulsedev.feedme.api.service.models.PlaceDetails;
 
 public class Api {
     public static final String API_ADDRESS = "http://feedme.indigogames.ca";
@@ -13,6 +12,10 @@ public class Api {
     /**
      * Argument classes
      */
+    public static class GetVersionInfoResult {
+        public String version;
+    }
+
     public static class SearchFoodImageArgs {
         public String food;
     }
@@ -31,6 +34,19 @@ public class Api {
     public static class SearchNearbyFoodPlacesResult {
         public Place[] nearby;
         public String next;
+    }
+
+    public static class GetPlaceInfoArgs {
+        public String place;
+    }
+
+    public static class GetPlaceInfoResult {
+        public PlaceDetails result;
+    }
+
+    public static ServiceTask getVersion(ServiceCallback<GetVersionInfoResult> callback) {
+        return ServiceCall.dataCall(API_ADDRESS, API_TIMEOUT, "system", "version", null, null,
+                GetVersionInfoResult.class, callback);
     }
 
     public static ServiceTask getFoodImage(String food,
@@ -61,6 +77,15 @@ public class Api {
                                                   ServiceCallback<SearchNearbyFoodPlacesResult>
                                                           callback) {
         return getNearbyFoodPlaces(food, latitude, longitude, null, callback);
+    }
+
+    public static ServiceTask getPlaceInfo(String placeId, ServiceCallback<GetPlaceInfoResult>
+            callback) {
+        GetPlaceInfoArgs args = new GetPlaceInfoArgs();
+        args.place = placeId;
+
+        return ServiceCall.dataCall(API_ADDRESS, API_TIMEOUT, "search", "placeInfo", args,
+                GetPlaceInfoArgs.class, GetPlaceInfoResult.class, callback);
     }
 
     public static ServiceTask downloadFile(String url, ServiceCallback<HttpStream> callback) {

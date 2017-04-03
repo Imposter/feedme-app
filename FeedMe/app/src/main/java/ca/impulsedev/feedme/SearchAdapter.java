@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
@@ -17,8 +18,8 @@ import java.util.List;
 
 import ca.impulsedev.feedme.api.service.models.Place;
 
-class RestaurantSearchAdapter extends
-        RecyclerView.Adapter<RestaurantSearchAdapter.ViewHolder> {
+class SearchAdapter extends
+        RecyclerView.Adapter<SearchAdapter.ViewHolder> {
     static class ViewHolder extends RecyclerView.ViewHolder {
         private CardView mCardView;
         private TextView mRestaurantRating;
@@ -43,25 +44,16 @@ class RestaurantSearchAdapter extends
 
     private static final double RADIUS_OF_EARTH = 6378.1; // Kilometers
 
-    private Location mCurrentLocation;
-    private List<Place> mPlaces;
+    private MainActivity mActivity;
     private int mLastPosition = 0;
 
-    RestaurantSearchAdapter(List<Place> places) {
-        mPlaces = places;
+    SearchAdapter(MainActivity activity) {
+        mActivity = activity;
     }
 
     @Override
     public int getItemCount() {
-        return mPlaces.size();
-    }
-
-    public void setPlaces(List<Place> places) {
-        mPlaces = places;
-    }
-
-    void setLocation(Location location) {
-        mCurrentLocation = location;
+        return mActivity.getPlaces().size();
     }
 
     @Override
@@ -75,7 +67,21 @@ class RestaurantSearchAdapter extends
     @Override
     public void onBindViewHolder(final ViewHolder viewHolder, int position) {
         Context context = viewHolder.mCardView.getContext();
-        Place place = mPlaces.get(position);
+        final Place place = mActivity.getPlaces().get(position);
+
+        // Open details when the card is clicked
+        viewHolder.mCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InputMethodManager inputMethodManager
+                        = (InputMethodManager) view.getContext().getSystemService(
+                        Context.INPUT_METHOD_SERVICE
+                );
+                inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+                mActivity.showDetailsForPlace(place);
+            }
+        });
 
         // Create font
         Typeface font = Typeface.createFromAsset(context.getAssets(),
@@ -89,8 +95,8 @@ class RestaurantSearchAdapter extends
         }
 
         // Calculate distance
-        double distance = getDistanceBetweenLocations(mCurrentLocation.getLatitude(),
-                mCurrentLocation.getLongitude(), place.geometry.location.lat,
+        double distance = getDistanceBetweenLocations(mActivity.getCurrentLocation().getLatitude(),
+                mActivity.getCurrentLocation().getLongitude(), place.geometry.location.lat,
                 place.geometry.location.lng);
         String distanceString;
         if (distance < 1000) {
