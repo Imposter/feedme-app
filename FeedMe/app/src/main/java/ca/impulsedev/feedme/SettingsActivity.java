@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ import ca.impulsedev.feedme.api.service.models.Place;
 
 public class SettingsActivity extends AppCompatActivity {
     private Switch mSwitch;
+    private Button mButton;
     private LocationManager mLocationManager;
     private LocationListener mLocationListener;
     private CardView mAboutApp;
@@ -39,6 +41,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         mSwitch = (Switch) findViewById(R.id.location_switch);
+        mButton = (Button) findViewById(R.id.clear_history);
         mAboutApp = (CardView) findViewById(R.id.AboutApp);
         mAboutUs = (CardView) findViewById(R.id.AboutUs);
         mAboutAppText = (TextView) findViewById(R.id.AboutAppText);
@@ -50,6 +53,13 @@ public class SettingsActivity extends AppCompatActivity {
                     configureSwitch();
                 }
             }
+        });
+
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //This is when the clear history button is clicked
+            };
         });
 
         mAboutApp.setOnClickListener(new View.OnClickListener() {
