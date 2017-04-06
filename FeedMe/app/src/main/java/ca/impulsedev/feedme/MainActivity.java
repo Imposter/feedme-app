@@ -165,6 +165,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     Manifest.permission.ACCESS_FINE_LOCATION,
             }, PERMISSION_REQUEST_LOCATION);
         }
+
+        requestLocationUpdates();
     }
 
     private void doSearch() {
