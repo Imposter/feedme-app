@@ -51,7 +51,8 @@
                         android:layout_height="wrap_content"
                         android:clickable="false"
                         android:isIndicator="true"
-                        android:numStars="5" />
+                        android:numStars= "5"
+                        />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -96,6 +97,7 @@
                             <ImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
                                 app:srcCompat="@android:drawable/ic_menu_directions" />
 
                             <TextView
@@ -123,7 +125,7 @@
                             android:id="@+id/restaurant_info_hours"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Monday: 11:00 AM – 12:00 AM\nTuesday: 11:00 AM – 12:00 AM\nWednesday: 11:00 AM – 12:00 AM\nThursday: 11:00 AM – 12:00 AM\nFriday: 11:00 AM – 2:00 AM\nSaturday: 11:00 AM – 2:00 AM\nSunday: 11:00 AM – 12:00 AM"
+                            android:text="Monday: \t\t\t11:00 AM – 12:00 AM\nTuesday: \t\t\t11:00 AM – 12:00 AM\nWednesday: \t11:00 AM – 12:00 AM\nThursday: \t\t11:00 AM – 12:00 AM\nFriday: \t\t\t\t11:00 AM – 2:00 AM\nSaturday: \t\t11:00 AM – 2:00 AM\nSunday: \t\t\t11:00 AM – 12:00 AM"
                             android:textSize="14sp" />
 
                     </LinearLayout>

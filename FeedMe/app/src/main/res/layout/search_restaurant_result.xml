@@ -10,10 +10,10 @@
         android:id="@+id/restaurant_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        res:cardElevation="2dp"
-        res:cardUseCompatPadding="true"
         android:clickable="true"
-        android:foreground="?selectableItemBackground">
+        android:foreground="?selectableItemBackground"
+        res:cardElevation="2dp"
+        res:cardUseCompatPadding="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -50,8 +50,8 @@
                             android:layout_height="48dp"
                             android:gravity="center"
                             android:text="5.0"
-                            android:textSize="14sp"
-                            android:textColor="@color/colorHighlight"/>
+                            android:textColor="@color/colorHighlight"
+                            android:textSize="14sp" />
 
                     </RelativeLayout>
 
@@ -59,8 +59,9 @@
                         android:id="@+id/restaurant_distance"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="1.0km"
-                        android:textAlignment="textEnd"
+                        android:textAlignment="center"
                         android:textSize="14sp" />
 
                 </LinearLayout>
