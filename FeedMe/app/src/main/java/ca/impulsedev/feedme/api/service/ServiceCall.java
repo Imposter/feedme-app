@@ -11,6 +11,9 @@ import ca.impulsedev.feedme.api.AsyncTaskResult;
 import ca.impulsedev.feedme.api.network.HttpStream;
 import ca.impulsedev.feedme.api.network.HttpTask;
 
+/**
+ * TODO/NOTE: Comment the rest of these
+ */
 public class ServiceCall {
     private static final ExecutorService sExecutor
             = Executors.newCachedThreadPool(Executors.defaultThreadFactory());

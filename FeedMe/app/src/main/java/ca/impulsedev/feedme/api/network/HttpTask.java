@@ -8,6 +8,10 @@ import java.util.concurrent.Future;
 import ca.impulsedev.feedme.api.AsyncTask;
 import ca.impulsedev.feedme.api.AsyncTaskResult;
 
+/**
+ * Used for asynchronous HTTP communication. Wrapper class for HttpRequest returning streams instead
+ * of HTTP responses
+ */
 public class HttpTask extends AsyncTask<HttpStream> {
     private static final int REQUEST_TIMEOUT = 1000;
 
@@ -18,27 +22,51 @@ public class HttpTask extends AsyncTask<HttpStream> {
     private int mTimeout;
     private Future<HttpResponse> mFutureResponse;
 
+    /**
+     * Default constructor
+     */
     public HttpTask() {
         mUrl = "";
         mData = new byte[0];
         mTimeout = REQUEST_TIMEOUT;
     }
 
+    /**
+     * Initializes task with HTTP url and POST data
+     * @param url Request URL
+     * @param data Request POST data as string
+     */
     public HttpTask(String url, String data) {
         mUrl = url;
         mData = data.getBytes();
     }
 
+    /**
+     * Initializes task with HTTP url and POST data
+     * @param url Request URL
+     * @param data Request POST data as byte array
+     */
     public HttpTask(String url, byte[] data) {
         mUrl = url;
         mData = data;
     }
 
+    /**
+     * Initializes task with HTTP url and response timeout
+     * @param url Request URL
+     * @param timeout Request timeout
+     */
     public HttpTask(String url, int timeout) {
         mUrl = url;
         mTimeout = timeout;
     }
 
+    /**
+     * Initializes task with HTTP url, POST data and response timeout
+     * @param url Request URL
+     * @param data Request POST data as string
+     * @param timeout Request timeout
+     */
     public HttpTask(String url, String data, int timeout) {
         mUrl = url;
         if (data != null)
@@ -46,28 +74,54 @@ public class HttpTask extends AsyncTask<HttpStream> {
         mTimeout = timeout;
     }
 
+    /**
+     * Initializes task with HTTP url, POST data and response timeout
+     * @param url Request URL
+     * @param data Request POST data as byte array
+     * @param timeout Request timeout
+     */
     public HttpTask(String url, byte[] data, int timeout) {
         mUrl = url;
         mData = data;
         mTimeout = timeout;
     }
 
+    /**
+     * Sets request URL
+     * @param url HTTP request URL
+     */
     public void setUrl(String url) {
         mUrl = url;
     }
 
+    /**
+     * Sets request POST data
+     * @param data HTTP POST data
+     */
     public void setData(String data) {
         mData = data.getBytes();
     }
 
+    /**
+     * Sets request POST data
+     * @param data HTTP POST data
+     */
     public void setData(byte[] data) {
         mData = data;
     }
 
+    /**
+     * Sets timeout
+     * @param timeout HTTP request timeout
+     */
     public void setTimeout(int timeout) {
         mTimeout = timeout;
     }
 
+    /**
+     * Processes request asynchronously
+     * @return HTTP stream
+     */
     @Override
     protected AsyncTaskResult<HttpStream> process() {
         // End if task was cancelled
@@ -105,6 +159,9 @@ public class HttpTask extends AsyncTask<HttpStream> {
         }
     }
 
+    /**
+     * Cancels request
+     */
     @Override
     public void cancel() {
         if (mFutureResponse != null) {

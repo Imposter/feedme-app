@@ -1,5 +1,8 @@
 package ca.impulsedev.feedme.api.service.models;
 
+/**
+ * Extended business information
+ */
 public class PlaceDetails {
     public AddressComponent[] address_components;
     public String adr_address;

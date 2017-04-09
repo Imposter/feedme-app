@@ -1,5 +1,8 @@
 package ca.impulsedev.feedme.api.service.models;
 
+/**
+ * Basic business information
+ */
 public class Place {
     public Geometry geometry;
     public String icon;

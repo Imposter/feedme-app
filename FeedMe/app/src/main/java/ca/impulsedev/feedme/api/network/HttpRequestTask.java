@@ -8,6 +8,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+/**
+ * Used for asynchronous HTTP communication in Android. Wrapper class for HttpRequest
+ */
 public class HttpRequestTask extends AsyncTask<HttpResponse> {
     private static final ExecutorService sExecutor
             = Executors.newCachedThreadPool(Executors.defaultThreadFactory());
@@ -15,10 +18,18 @@ public class HttpRequestTask extends AsyncTask<HttpResponse> {
     private HttpRequest mRequest;
     private Future<HttpResponse> mFutureResponse;
 
+    /**
+     * Constructor, initializing task with HttpRequest
+     * @param request HTTP request
+     */
     public HttpRequestTask(HttpRequest request) {
         mRequest = request;
     }
 
+    /**
+     * Processes request asynchronously
+     * @return Returns result when request is complete
+     */
     @Override
     protected AsyncTaskResult<HttpResponse> process() {
         // End if task was cancelled
@@ -43,6 +54,9 @@ public class HttpRequestTask extends AsyncTask<HttpResponse> {
         }
     }
 
+    /**
+     * Cancels HTTP request and cancels future thread execution
+     */
     @Override
     public void cancel() {
         if (mFutureResponse != null) {

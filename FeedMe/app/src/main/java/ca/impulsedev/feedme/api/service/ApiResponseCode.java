@@ -1,5 +1,8 @@
 package ca.impulsedev.feedme.api.service;
 
+/**
+ * API response codes, used to identify how the server responded to a particular request
+ */
 public enum ApiResponseCode {
     SUCCESS,
     ERROR,

@@ -1,5 +1,8 @@
 package ca.impulsedev.feedme.api.service.models;
 
+/**
+ * Reviews for a business
+ */
 public class Review {
     public Aspect[] aspects;
     public String author_name;
