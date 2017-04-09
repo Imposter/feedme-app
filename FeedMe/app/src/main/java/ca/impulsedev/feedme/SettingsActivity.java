@@ -1,7 +1,6 @@
 package ca.impulsedev.feedme;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -13,14 +12,11 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
-
-import ca.impulsedev.feedme.api.service.models.Place;
 
 public class SettingsActivity extends AppCompatActivity {
     private Switch mSwitch;
@@ -58,8 +54,8 @@ public class SettingsActivity extends AppCompatActivity {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //This is when the clear history button is clicked
-            };
+                deleteFile(MainActivity.SEARCH_HISTORY_FILE);
+            }
         });
 
         mAboutApp.setOnClickListener(new View.OnClickListener() {
@@ -68,12 +64,13 @@ public class SettingsActivity extends AppCompatActivity {
                 if (!bAboutApp) {
                     mAboutAppText.setVisibility(TextView.VISIBLE);
                     bAboutApp = true;
-                }
-                else {
+                } else {
                     mAboutAppText.setVisibility(TextView.GONE);
                     bAboutApp = false;
                 }
-            };
+            }
+
+            ;
         });
 
         mAboutUs.setOnClickListener(new View.OnClickListener() {
@@ -82,20 +79,26 @@ public class SettingsActivity extends AppCompatActivity {
                 if (!bAboutUs) {
                     mAboutUsText.setVisibility(TextView.VISIBLE);
                     bAboutUs = true;
-                }
-                else {
+                } else {
                     mAboutUsText.setVisibility(TextView.GONE);
                     bAboutUs = false;
                 }
-            };
+            }
+
+            ;
         });
     }
 
-    void configureSwitch(){
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+    void configureSwitch() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.INTERNET}, 10);
+                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.INTERNET}, 10);
             }
+
             return;
         }
 

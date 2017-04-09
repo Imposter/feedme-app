@@ -2,7 +2,6 @@ package ca.impulsedev.feedme;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.location.Location;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,7 +13,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
-import java.util.List;
 
 import ca.impulsedev.feedme.api.service.models.Place;
 

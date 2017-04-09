@@ -43,7 +43,7 @@ public class StartupActivity extends AppCompatActivity {
             createStartupTask();
             mStartupTask.execute();
         }
-        super.onPause();
+        super.onResume();
     }
 
     @Override

@@ -1,6 +1,5 @@
 package ca.impulsedev.feedme.api.service;
 
-
 import ca.impulsedev.feedme.api.network.HttpTask;
 
 public class ServiceTask {

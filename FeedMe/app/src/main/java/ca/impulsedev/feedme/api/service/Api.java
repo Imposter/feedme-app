@@ -6,8 +6,8 @@ import ca.impulsedev.feedme.api.service.models.PlaceDetails;
 
 public class Api {
     public static final String API_ADDRESS = "http://feedme.indigogames.ca";
-    public static final int API_TIMEOUT = 2500;
-    public static final int DOWNLOAD_TIMEOUT = 3000;
+    public static final int API_TIMEOUT = 3500;
+    public static final int DOWNLOAD_TIMEOUT = 5000;
 
     /**
      * Argument classes

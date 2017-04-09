@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -29,7 +30,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +42,7 @@ import ca.impulsedev.feedme.api.service.models.Place;
 import ca.impulsedev.feedme.ui.ViewUtils;
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
-    private static final String SEARCH_HISTORY_FILE = "searches.txt";
+    protected static final String SEARCH_HISTORY_FILE = "searches.txt";
 
     private static final int PERMISSION_REQUEST_LOCATION = 100;
 
@@ -390,6 +390,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     private void loadSearches() {
         try {
+            mPreviousSearches.clear();
             FileInputStream input = openFileInput(SEARCH_HISTORY_FILE);
             StringBuilder builder = new StringBuilder();
             while (input.available() > 0) {
@@ -471,6 +472,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_menu_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                this.startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void onLocationChanged(Location location) {
         if (isBetterLocation(location, mCurrentLocation))
             mCurrentLocation = location;
@@ -491,7 +504,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         // Not needed, but required
     }
 
-    // https://developer.android.com/guide/topics/location/strategies.html
+    // From: https://developer.android.com/guide/topics/location/strategies.html
     protected static boolean isBetterLocation(Location location, Location currentBestLocation) {
         if (currentBestLocation == null) {
             // A new location is always better than no location
