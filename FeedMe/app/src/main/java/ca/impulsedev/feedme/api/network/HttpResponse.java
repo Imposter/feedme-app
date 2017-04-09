@@ -66,7 +66,7 @@ public class HttpResponse {
     }
 
     /**
-     * Returns whether the response connection is open or not
+     * Connection is open or not
      * @return Whether the response connection is open or not
      */
     public boolean isOpen() {

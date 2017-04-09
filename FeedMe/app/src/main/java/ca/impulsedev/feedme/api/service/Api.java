@@ -14,20 +14,29 @@ public class Api {
     public static final int DOWNLOAD_TIMEOUT = 5000;
 
     /**
-     * Argument classes
+     * System::Version request result
      */
     public static class GetVersionInfoResult {
         public String version;
     }
 
+    /**
+     * Search::FoodImage request arguments
+     */
     public static class SearchFoodImageArgs {
         public String food;
     }
 
+    /**
+     * Search::FoodImage request result
+     */
     public static class SearchFoodImageResult {
         public String link;
     }
 
+    /**
+     * Search::NearbyFoodPlaces request arguments
+     */
     public static class SearchNearbyFoodPlacesArgs {
         public String food;
         public double longitude;
@@ -35,15 +44,24 @@ public class Api {
         public String token;
     }
 
+    /**
+     * Search::NearbyFoodPlaces request result
+     */
     public static class SearchNearbyFoodPlacesResult {
         public Place[] nearby;
         public String next;
     }
 
+    /**
+     * Search::GetPlaceInfo request arguments
+     */
     public static class GetPlaceInfoArgs {
         public String place;
     }
 
+    /**
+     * Search::GetPlaceInfo request result
+     */
     public static class GetPlaceInfoResult {
         public PlaceDetails result;
     }

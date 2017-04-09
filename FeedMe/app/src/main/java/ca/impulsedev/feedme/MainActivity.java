@@ -41,6 +41,10 @@ import ca.impulsedev.feedme.api.service.ServiceTask;
 import ca.impulsedev.feedme.api.service.models.Place;
 import ca.impulsedev.feedme.ui.ViewUtils;
 
+/**
+ * Core activity for app, allows searching of API for places offering food, a food type or just by
+ * their names.
+ */
 public class MainActivity extends AppCompatActivity implements LocationListener {
     protected static final String SEARCH_HISTORY_FILE = "searches.txt";
 
@@ -78,6 +82,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private TextView mRestaurantHours;
     private ServiceTask mGetPlaceInfoTask;
 
+    /**
+     * Called when the activity is created, for initialization
+     * @param savedInstanceState Saved state information
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -166,9 +174,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             }, PERMISSION_REQUEST_LOCATION);
         }
 
+        // Request location updates
         requestLocationUpdates();
     }
 
+    /**
+     * Create task to search for nearby places if a task is not already running, using the text
+     * entered by the user in the search bar
+     */
     private void doSearch() {
         // If we're already searching, cancel previous request
         if (mSearchNearbyPlacesTask != null && mSearchNearbyPlacesTask.isRunning()) {
@@ -249,6 +262,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         );
     }
 
+    /**
+     * Creates task to get details for a place and displays them once they're obtained from the API
+     * @param place Place to get extended details for
+     */
     public void showDetailsForPlace(Place place) {
         // Get details for place
         mGetPlaceInfoTask = Api.getPlaceInfo(place.place_id,
@@ -325,14 +342,28 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         );
     }
 
+    /**
+     * Gets places for search result
+     * @return List of places
+     */
     public List<Place> getPlaces() {
         return mPlaces;
     }
 
+    /**
+     * Gets current location
+     * @return Current location
+     */
     public Location getCurrentLocation() {
         return mCurrentLocation;
     }
 
+    /**
+     * Called when a key is pressed on the device
+     * @param keyCode Which key was pressed
+     * @param event Event information
+     * @return Whether the event should not be executed further
+     */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
@@ -360,6 +391,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         return super.onKeyDown(keyCode, event);
     }
 
+    /**
+     * Requests location updates for activity from GPS provider
+     */
     private void requestLocationUpdates() {
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -376,6 +410,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
     }
 
+    /**
+     * Disables location update requests for activity
+     */
     private void removeLocationUpdates() {
         try {
             mLocationManager.removeUpdates(this);
@@ -388,6 +425,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
     }
 
+    /**
+     * Loads searches from a history file
+     */
     private void loadSearches() {
         try {
             mPreviousSearches.clear();
@@ -411,12 +451,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         updateSearches();
     }
 
+    /**
+     * Updates interface with newly added searches to history
+     */
     private void updateSearches() {
         mSearchAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line,
                 mPreviousSearches);
         mSearchText.setAdapter(mSearchAdapter);
     }
 
+    /**
+     * Saves newly added searches to history file
+     */
     private void saveSearches() {
         try {
             FileOutputStream output = openFileOutput(SEARCH_HISTORY_FILE, Context.MODE_PRIVATE);
@@ -429,6 +475,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
     }
 
+    /**
+     * Called when the activity is stopped by the user or operating system
+     */
     @Override
     public void onStop() {
         super.onStop();
@@ -437,6 +486,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         saveSearches();
     }
 
+    /**
+     * Called when the activity is resumed by the user or operating system
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -445,6 +497,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         requestLocationUpdates();
     }
 
+    /**
+     * Called when the activity is paused by the user or operating system
+     */
     @Override
     public void onPause() {
         super.onPause();
@@ -452,6 +507,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         removeLocationUpdates();
     }
 
+    /**
+     * Called when a permissions request dialog has been given a result
+     * @param requestCode Request type
+     * @param permissions Permissions for which the result was given
+     * @param grantResults Whether the permissions were granted or not
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -465,12 +526,22 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
     }
 
+    /**
+     * Called when the options menu is being created
+     * @param menu Options menu
+     * @return Whether the option menu should be shown or not
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.appbar_menu, menu);
         return true;
     }
 
+    /**
+     * Called when an item on the options menu is selected
+     * @param item The selected item
+     * @return Whether the event was handled or not
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -483,28 +554,51 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
     }
 
+    /**
+     * Called when the location has changed
+     * @param location New location
+     */
     @Override
     public void onLocationChanged(Location location) {
         if (isBetterLocation(location, mCurrentLocation))
             mCurrentLocation = location;
     }
 
+    /**
+     * Called when the location service status has changed
+     * @param provider Location provider
+     * @param status Provider status
+     * @param extras Extended provider status information
+     */
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
         // Not needed, but required
     }
 
+    /**
+     * Called when a provider is enabled
+     * @param provider Provider which was enabled
+     */
     @Override
     public void onProviderEnabled(String provider) {
         // Not needed, but required
     }
 
+    /**
+     * Called when a provider is disabled
+     * @param provider Provider which was disabled
+     */
     @Override
     public void onProviderDisabled(String provider) {
         // Not needed, but required
     }
-
-    // From: https://developer.android.com/guide/topics/location/strategies.html
+    /**
+     * Determines if a location is better than the current best location
+     * From: https://developer.android.com/guide/topics/location/strategies.html
+     * @param location New location
+     * @param currentBestLocation Best location
+     * @return If new location is better than the current best location
+     */
     protected static boolean isBetterLocation(Location location, Location currentBestLocation) {
         if (currentBestLocation == null) {
             // A new location is always better than no location
@@ -548,6 +642,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         return false;
     }
 
+    /**
+     * Determines if two providers are the same
+     * From: https://developer.android.com/guide/topics/location/strategies.html
+     * @param provider1 Location provider
+     * @param provider2 Location provider
+     * @return If two providers are the same
+     */
     private static boolean isSameProvider(String provider1, String provider2) {
         if (provider1 == null) {
             return provider2 == null;

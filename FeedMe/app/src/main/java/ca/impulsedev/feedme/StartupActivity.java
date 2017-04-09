@@ -18,9 +18,16 @@ import ca.impulsedev.feedme.api.AsyncTaskResult;
 import ca.impulsedev.feedme.api.service.Api;
 import ca.impulsedev.feedme.api.service.ServiceCallback;
 
+/**
+ * Startup check activity, tests if the app has network connectivity and necessary permissions
+ */
 public class StartupActivity extends AppCompatActivity {
     private AsyncTask<Void> mStartupTask;
 
+    /**
+     * Called when the activity is created, for initialization
+     * @param savedInstanceState Saved state information
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,12 +38,18 @@ public class StartupActivity extends AppCompatActivity {
         mStartupTask.execute();
     }
 
+    /**
+     * Called when the activity is stopped by the user or operating system
+     */
     @Override
     protected void onStop() {
         mStartupTask.cancel(true);
         super.onStop();
     }
 
+    /**
+     * Called when the activity is resumed by the user or operating system
+     */
     @Override
     protected void onResume() {
         if (!mStartupTask.isRunning()) {
@@ -46,12 +59,19 @@ public class StartupActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    /**
+     * Called when the activity is paused by the user or operating system
+     */
     @Override
     protected void onPause() {
         mStartupTask.cancel(true);
         super.onPause();
     }
 
+    /**
+     * Creates a startup task to check for network connectivity, location permissions and connection
+     * to API backend
+     */
     private void createStartupTask() {
         mStartupTask = new AsyncTask<Void>() {
             @Override
@@ -149,6 +169,10 @@ public class StartupActivity extends AppCompatActivity {
         };
     }
 
+    /**
+     * Checks if WiFi is available
+     * @return Whether WiFi is available or not
+     */
     private boolean isWifiAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -157,6 +181,10 @@ public class StartupActivity extends AppCompatActivity {
                 && networkInfo.getType() == ConnectivityManager.TYPE_WIFI;
     }
 
+    /**
+     * Checks if mobile data is available
+     * @return Whether mobile data is available or not
+     */
     private boolean isMobileDataAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -165,6 +193,10 @@ public class StartupActivity extends AppCompatActivity {
                 && networkInfo.getType() == ConnectivityManager.TYPE_MOBILE;
     }
 
+    /**
+     * Checks if GPS is enabled
+     * @return Whether GPS is enabled or not
+     */
     private boolean isGpsEnabled() {
         LocationManager locationManager =
                 (LocationManager) getSystemService(Context.LOCATION_SERVICE);
