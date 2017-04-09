@@ -1,9 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Settings, should always be in the menu -->
-    <item android:id="@+id/action_settings"
+    <item
         android:title="@string/appbar_menu_settings"
-        app:showAsAction="never"/>
+        android:checkable="false"
+
+        app:showAsAction="never" />
 
 </menu>
