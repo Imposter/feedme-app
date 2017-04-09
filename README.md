@@ -25,7 +25,7 @@ The following are requirements to compile and install the Android application:
 3. Deploy APK to target device
 
 ### Authors
-- Betty Kwong
-- Eyaz Rehman
-- Rameet Sekhon
-- Rishabh Patel
+- Betty Kwong ([GitHub](https://github.com/bunnehbetz))
+- Eyaz Rehman ([GitHub](https://github.com/Imposter))
+- Rameet Sekhon ([GitHub](https://github.com/rameetss))
+- Rishabh Patel ([GitHub](https://github.com/RPatel97))
