@@ -1,3 +1,13 @@
+/**
+ * Feed Me! Android App
+ *
+ * Created by:
+ * - Betty Kwong
+ * - Eyaz Rehman
+ * - Rameet Sekhon
+ * - Rishabh Patel
+ */
+ 
 package ca.impulsedev.feedme;
 
 import android.content.Context;
